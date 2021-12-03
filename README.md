@@ -1,2 +1,2 @@
 # Projects
-My Project related to Machine Learning and Data Science
+My Projects related to Machine Learning and Data Science
