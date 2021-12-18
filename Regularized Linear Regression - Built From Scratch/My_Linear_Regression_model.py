@@ -302,7 +302,7 @@ class My_Linear_Regression():
             grad = (1/m) * ( (np.dot(X,theta) - Y).dot(X) )
 
             # Update theta as per gradient Calculated
-            theta[0] = theta[0] - alpha * grad[0] # We dont regularize intercept term
+            theta[0] = theta[0] - alpha * grad[0] # We dont regularize theta related to intercept
             theta[1:] = theta[1:] - alpha * grad[1:] + (lambda_/m) * theta[1:]
 
             # append cost of this Iteration
