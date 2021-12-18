@@ -130,9 +130,10 @@ class My_Linear_Regression():
     
         for i in range(num_iters):
 
-            grad = (alpha/m) * ( (np.dot(X,theta) - Y).dot(X) )
-            theta[0] = theta[0] - grad[0]
-            theta[1:] = theta[1:] - grad[1:] + (lambda_/m) * theta[1:]
+            grad = (1/m) * ( (np.dot(X,theta) - Y).dot(X) )
+            
+            theta[0] = theta[0] - alpha * grad[0]
+            theta[1:] = theta[1:] - alpha * grad[1:] + (lambda_/m) * theta[1:]
 
             J_history.append(self.compute_cost(X,Y,theta,lambda_))
 
