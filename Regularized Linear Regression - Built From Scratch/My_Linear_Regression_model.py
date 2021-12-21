@@ -10,7 +10,7 @@ class My_Linear_Regression():
 
         self.cost = None # stores training cost array
         self.theta = [] # theta our data set
-        self.num_iters = 100 # number of Iterations
+        self.num_iters = 100 # default number of Iterations
         self.X_final = pd.DataFrame() # stores our normalized data set
         self.Y = pd.Series(dtype='int64') # stores target data set
         self.mu = {} # dictionary of means
@@ -26,7 +26,7 @@ class My_Linear_Regression():
         Parameters
         ----------
         X : DataFrame,
-            DataFrame with features (Data Matrix)
+            DataFrame containing features (Data Matrix)
 
         Y : Series,
             Series with actual values (target values)
@@ -41,7 +41,7 @@ class My_Linear_Regression():
             learning rate for gradient descent
 
         num_iters : int,
-            number of Iterations the gradient descent should return
+            number of Iterations the gradient descent should run
 
         lambda_ : float,
             regularization parameter used to prevent overfitting
@@ -57,25 +57,25 @@ class My_Linear_Regression():
         # Whether to normalize the data or not
         if normalize:
 
-            X_norm,self.mu,self.std = self.feature_Normalize(X,
+            X_one,self.mu,self.std = self.feature_Normalize(X,
                                                              list_of_features,
                                                              self.mu,
                                                              self.std)
-            # store to means and standard deviations to normalize our
+            # store the means and standard deviations to normalize our
             # dev and test data by same means and standard deviations
 
         else :
 
-            X_norm = X
+            X_one = X
 
-        # Adding intercept column (bias term) to our data set
-        X_norm_intercept = self.add_intercept(X_norm)
+        # Adding intercept column feature (equal to 1) to our data set
+        X_intercept = self.add_intercept(X_one)
 
         # Storing the transfomed data set in our object variable
-        self.X_final = X_norm_intercept
+        self.X_final = X_intercept
 
         # Initialize theta to zeros
-        self.initialize_theta(X_norm_intercept)
+        self.initialize_theta(self.X_final)
 
         # perfom gradient descent
         self.theta, self.cost = self.gradient_descent(self.X_final,
@@ -96,7 +96,8 @@ class My_Linear_Regression():
         Parameters
         ----------
         X_input : DataFrame,
-            DataFrame with features (Data Matrix)
+            DataFrame containing features (Data Matrix) based on
+            which to predict
 
         Returns
         -------
@@ -108,7 +109,7 @@ class My_Linear_Regression():
         if not self.mu and not self.std :
 
         # if here, training data was not normalized, so just add intercept
-            X_intercept = self.add_intercept(X_input)
+            X_final = self.add_intercept(X_input)
 
             # predict based on our theta
             return np.dot(X_input,self.theta)
@@ -122,10 +123,10 @@ class My_Linear_Regression():
                                                 self.mu,
                                                 self.std)
             # now add intercept
-            X_intercept_norm = self.add_intercept(X_norm)
+            X_final = self.add_intercept(X_norm)
 
             # predict based on our theta
-            return np.dot(X_intercept_norm,self.theta)
+            return np.dot(X_final,self.theta)
 
 
     def feature_Normalize(self,X , list_of_features, p_mu , p_std):
@@ -136,22 +137,29 @@ class My_Linear_Regression():
         Parameters
         ----------
         X : DataFrame,
-            DataFrame with features (Data Matrix)
+            DataFrame containing features (Data Matrix)
 
         list_of_features : python list,
             List containing names of the columns to normalize
 
-        p_mu : numpy array,
-            array of means by which to subract the values of the respective
+        p_mu : dictionary,
+            dictionary of means by which to subract the values of the respective
             columns
 
-        p_std : numpy array,
-            array of standard deviation by which to scale the values of the
+        p_std : dictionary,
+            dictionary of standard deviation by which to scale the values of the
             respective columns
 
         Returns
         -------
-        None
+        X_norm : DataFrame,
+            normalized dataframe for given X
+
+        mu_dict : dictionary,
+            dictionary of means by which the data is normalized
+
+        std_dict : dictionary,
+            dictionary of standard deviations by which data is normalized
         """
         # if users doesnt give which columns (features) to normalize,
         # used this default features based on our dataset
@@ -162,7 +170,7 @@ class My_Linear_Regression():
         mu_dict = {}
         std_dict = {}
 
-        # loop and normalize each feature
+        # loop and normalize each column
         for i in list_of_features :
 
             if i in self.mu.values() and i in self.std.values() :
@@ -184,14 +192,14 @@ class My_Linear_Regression():
 
 
     def add_intercept(self,X):
-        """ Adds intercept term (bias term) in new column named
-        intercept in the given dataframe 'X' and places that column
+        """ Adds intercept feature (bias feature) in new column named
+        intercept in the given dataframe 'X' and place that column
         in first position of DataFrame.
 
         Parameters
         ----------
         X : DataFrame,
-            DataFrame with features (Data Matrix)
+            DataFrame containing features (Data Matrix)
 
         Returns
         -------
@@ -199,9 +207,10 @@ class My_Linear_Regression():
             DataFrame with intercept column.
         """
 
-        X['intercept'] =  np.ones(X.shape[0]) # add intercept (bias)
+        X['intercept'] =  np.ones(X.shape[0]) # add intercept feature
         # Make this as first column of our dataset
-        X_intercept = X.reindex(columns= (['intercept'] + X.columns.to_list()[:-1]))
+        X_intercept = X.reindex(columns= (['intercept'] + \
+                                          X.columns.to_list()[:-1]))
 
         return X_intercept
 
@@ -214,7 +223,7 @@ class My_Linear_Regression():
         Parameters
         ----------
         X : DataFrame,
-            DataFrame with features (Data Matrix)
+            DataFrame containing features (Data Matrix)
 
         Returns
         -------
@@ -234,7 +243,7 @@ class My_Linear_Regression():
         Parameters
         ----------
         X : DataFrame,
-            DataFrame with features (Data Matrix)
+            DataFrame containing features (Data Matrix)
 
         Y : Series,
             Series with actual values (target values)
@@ -248,26 +257,26 @@ class My_Linear_Regression():
         Returns
         -------
         J : float,
-            returns cost of the function
+            cost of the function
         """
 
         m = Y.shape[0] # number of training examples
         h = np.dot(X,theta) # compute hypothesis based on theta
 
         # Compute Cost as per Cost function
-        J = np.sum(np.square(h-Y))/(2*m) + \
+        J = np.sum(np.square(h-Y)) / (2*m) + \
             (lambda_/(2*m)) * np.sum(np.square(theta[1:])) # l2 regularization
 
         return J
 
     def gradient_descent(self,X,Y,theta,alpha,num_iters,lambda_):
         """ Calculates the gradient of cost function and perfoms
-        gradien descent as per number of Iterations given.
+        gradien descent number of times specified by num_iters.
 
         Parameters
         ----------
         X : DataFrame,
-            DataFrame with features (Data Matrix)
+            DataFrame containing features (Data Matrix)
 
         Y : Series,
             Series with actual values (target values)
@@ -279,7 +288,7 @@ class My_Linear_Regression():
             learning rate for gradient descent
 
         num_iters : int,
-            number of Iterations the gradient descent should return
+            number of times the gradient descent should run
 
         lambda_ : float,
             regularization parameter used to prevent overfitting
@@ -287,7 +296,7 @@ class My_Linear_Regression():
         Returns
         -------
         theta  : numpy array,
-            optimized theta after doing performing gradient gradient_descent
+            optimized theta after doing performing gradient descent
 
         J_history : python list,
             List containing cost computed in every Iteration.
@@ -299,7 +308,7 @@ class My_Linear_Regression():
 
         for i in range(num_iters):
 
-            grad = (1/m) * ( (np.dot(X,theta) - Y).dot(X) )
+            grad = (1/m) * ( (np.dot(X,theta) - Y).dot(X) )# gradient
 
             # Update theta as per gradient Calculated
             theta[0] = theta[0] - alpha * grad[0] # We dont regularize theta related to intercept
@@ -323,7 +332,7 @@ class My_Linear_Regression():
 
         mean : panda series or numpy array,
             shape must be equal to Y_actual
-            Mean of the training examples across features
+            Mean of the training examples across features (rows of X)
 
         Returns
         -------
@@ -387,8 +396,8 @@ class My_Linear_Regression():
 
         Returns
         -------
-        J   : float
-            cost of the Parameters
+        J  : float
+            computed cost as per linear regression cost function
         """
         m = Y_actual.shape[0] # number of training examples
         J = np.sum(np.square(Y_pred-Y_actual))/(2*m) # cost
