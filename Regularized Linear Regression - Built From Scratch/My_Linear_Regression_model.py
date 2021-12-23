@@ -172,20 +172,29 @@ class My_Linear_Regression():
 
         # loop and normalize each column
         for i in list_of_features :
-
-            if i in self.mu.values() and i in self.std.values() :
-            # if we already have means and standard deviations values of
-            # our training set
+            
+            # first normalize (subtract by mean)
+            if i in self.mu.values() :
+            # if we already have means of our training set
                 mu = p_mu[i]
+            
+            else :
+            # Calculate the mean
+                mu = np.mean(X_norm[i])
+                
+            X_norm[i] = (X_norm[i] - mu)# normalize
+            mu_dict[i] = mu # store means
+            
+            # Now scale the normalized data
+            if i in self.std.values() :
+            # if we already standard deviations of our training set
                 std = p_std[i]
 
             else :
-            # Calculate the means and standard deviation and then normalize
-                mu = np.mean(X_norm[i])
-                std = np.std(X_norm[i])
+            # Calculate the standard deviation
+                std = np.std(X_norm[i],ddof=1) # ddof=1 for sample variance
 
-            X_norm[i] = (X_norm[i] - mu)/std # normalize
-            mu_dict[i] = mu # store means
+            X_norm[i] = X_norm[i]/std # now scale
             std_dict[i] = std # stores standard deviations
 
         return X_norm, mu_dict, std_dict
