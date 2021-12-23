@@ -156,10 +156,10 @@ class My_Linear_Regression():
             normalized dataframe for given X
 
         mu_dict : dictionary,
-            dictionary of means by which the data is normalized
+            dictionary of means by which the data is normalized (subtract)
 
         std_dict : dictionary,
-            dictionary of standard deviations by which data is normalized
+            dictionary of standard deviations by which data is normalized (scale)
         """
         # if users doesnt give which columns (features) to normalize,
         # used this default features based on our dataset
