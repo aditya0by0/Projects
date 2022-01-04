@@ -90,12 +90,12 @@ class My_PCA() :
         return G
     
     def project_onto(self,X,U,K):
-        Z = np.dot(X,U[:,:K])
-        return Z
+        Z = np.dot(X,U[:,:K]) # mxn - nxK
+        return Z # mxK
     
     def recover_back(self,Z,U,K):
-        X_rec = np.dot(Z,U[:,:K].T)
-        return X_rec
+        X_rec = np.dot(Z,U[:,:K].T) # mxK - Kxn
+        return X_rec # mxn
         
         
     
