@@ -2,6 +2,8 @@ import numpy as np
 
 class My_PCA() :
     
+    self.K = None
+    
     def run_pca(self,Covariance_matrix):
         
         S,V = self.find_eigens(Covariance_matrix)
@@ -14,88 +16,38 @@ class My_PCA() :
         
         if row_vect :
             A = A.T
-            
-        eigen_values, eigen_vectors = np.linalg.eig(A)
-        sorted_indices = np.argsort(eigen_values)[::-1]
-        eigen_values = eigen_values[sorted_indices]
-        eigen_vector_matrix = eigen_vectors[:, sorted_indices]
         
-        return eigen_values, eigen_vector_matrix
+        # returns tuple of eigen values and unit eigen vectors
+        eigen_values, eigen_vectors = np.linalg.eig(Cov_matrix) 
+        sort_indices = np.argsort(eigen_values)[::-1] # sort the indices of  eigen value from large to small
+        eigen_values = eigen_values[sort_indices] # sort the eigen values
+        eigen_vectors = eigen_vectors[:,sort_indices] # sort eigen column vectors in same order
         
-    def find_transformed_vectors(self,A,B):
-        return np.dot(A,B)
-
-    def replace_zero(self,array): 
+        return eigen_values, eigen_vectors
+        
+    def cal_var_pc(array):
     
-        for i in range(len(array)) :
-            if array[i] == 0 : 
-                array[i] = 1
-        return array
-    
-    def gram_schmidt(self,A, norm=True, row_vect=False):
-        """Orthonormalizes vectors by gram-schmidt process
+        total_variance = np.sum(array)
+        var_in_pc = []
+        for i in array:
+            var_4_pc = round(i/total_variance,2)
+            var_in_pc.append(var_4_pc)
 
-        Parameters
-        -----------
-        A : ndarray,
-        Matrix having vectors in its columns
-
-        norm : bool,
-        Do you need Normalized vectors?
-
-        row_vect: bool,
-        Does Matrix A has vectors in its rows?
-
-        Returns
-        -------
-        G : ndarray,
-        Matrix of orthogonal vectors
-
-        """
-        if row_vect :
-            # if true, transpose it to make column vector matrix
-            A = A.T
-
-        no_of_vectors = A.shape[1]
-        G = A[:,0:1].copy() # copy the first vector in matrix
-        # 0:1 is done to to be consistent with dimensions - [[1,2,3]]
-
-        # iterate from 2nd vector to number of vectors
-        for i in range(1,no_of_vectors):
-
-            # calculates weights(coefficents) for every vector in G
-            numerator = A[:,i].dot(G)
-            denominator = np.diag(np.dot(G.T,G)) #to get elements in diagonal
-            weights = np.squeeze(numerator/denominator)
-
-            # projected vector onto subspace G
-            projected_vector = np.sum(weights * G,
-                                      axis=1,
-                                      keepdims=True)
-
-            # orthogonal vector to subspace G
-            orthogonalized_vector = A[:,i:i+1] - projected_vector
-
-            # now add the orthogonal vector to our set
-            G = np.hstack((G,orthogonalized_vector))
-
-        if norm :
-            # to get orthoNormal vectors (unit orthogonal vectors)
-            # replace zero to 1 to deal with division by 0 if matrix has 0 vector
-            G = G/self.replace_zero(np.linalg.norm(G,axis=0))
-
-        if row_vect:
-            return G.T
-
-        return G
+        return var_in_pc
+        
     
     def project_onto(self,X,U,K):
-        Z = np.dot(X,U[:,:K]) # mxn - nxK
-        return Z # mxK
+        
+        self.K = K
+        Z = np.dot(X, U[:, : self.K]) # mxn - nxK = mxK
+        
+        return Z
     
-    def recover_back(self,Z,U,K):
-        X_rec = np.dot(Z,U[:,:K].T) # mxK - Kxn
-        return X_rec # mxn
+    def recover_back(self,Z,U):
+        
+        X_rec = np.dot(Z,U[:, : self.K].T) # mxK - Kxn = mxn
+        
+        return X_rec
         
         
     
