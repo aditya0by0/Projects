@@ -3,10 +3,12 @@ import matplotlib.pyplot as plt
 
 class My_PCA() :
     
-    # object variable to store number of first 'K' Principal Components (PCs) to 
-    # which we are projecting data on, so as to recover back data from same PCs
     def __init__(self):
+        
+        # object variable to store number of first 'K' Principal Components (PCs) to 
+        # which we are projecting data on, so as to recover back data from same PCs
         self.K = None
+        
         self.exp_var = [] # stores explained variances by each PCs
     
     def run_pca(self,norm_X):
