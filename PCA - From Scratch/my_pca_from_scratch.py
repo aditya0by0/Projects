@@ -110,6 +110,7 @@ class My_PCA() :
             by each principal component
         
         """
+        
         total_variance = np.sum(eig_val) # total variance
         exp_var = [] # percentage of variance explained by each principal component
         
