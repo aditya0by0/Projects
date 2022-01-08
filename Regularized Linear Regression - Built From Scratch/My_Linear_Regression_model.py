@@ -32,7 +32,7 @@ class My_Linear_Regression():
             Series with actual values (target values)
 
         normalize : bool,
-                boolean to tell whether to normalize data or not.
+            boolean to tell whether to normalize data or not.
 
         list_of_features : python list,
             List containing names of the columns to normalize
