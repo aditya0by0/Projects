@@ -1,4 +1,4 @@
-# Regularized Logistic Regression - Built from Scratch
+# PCA - From Scratch
 
 ## DataSet Used : [Custom/Dummy data](pca_data)
 
