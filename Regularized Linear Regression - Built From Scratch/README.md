@@ -1,4 +1,4 @@
-# Regularized Logistic Regression - Built from Scratch
+# Regularized Linear Regression - Built from Scratch
 
 ## DataSet Used : [CarDekho Vehicle dataset](<car data.csv>) from [Kaggle](https://www.kaggle.com/nehalbirla/vehicle-dataset-from-cardekho) 
 
