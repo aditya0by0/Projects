@@ -1,8 +1,8 @@
 # Regularized Logistic Regression - Built from Scratch
 
-## DataSet Used : [Iris Data](iris.data)
+## DataSet Used : [CarDekho Vehicle dataset](<car data.data>) from [Kaggle](https://www.kaggle.com/nehalbirla/vehicle-dataset-from-cardekho) 
 
-I have built Logistic Regression model for multi-class Classification with Neural Network design approach and have added regularization to prevent overfitting.<br />
-Please click [here](<Regularized Mutlinomial Logistic Regression - From Scratch.ipynb>) to open Jupyter Notebook for the same.<br />
-You can see the code for the model [here](My_logistic_regression_model.py).
+Built Linear Regression Model from right scratch for CarDekho Vehicle dataset from Kaggle. Also have added regularization functionality to the model. This model works for single and multi-variables problems.<br />
+Please click [here](<Regularized Linear Regression - Built From Scratch.ipynb>) to open Jupyter Notebook for the same.<br />
+You can see the code for the model [here](My_Linear_Regression_model.py).
 
